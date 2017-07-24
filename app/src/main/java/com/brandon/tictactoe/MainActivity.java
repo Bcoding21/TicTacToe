@@ -8,8 +8,9 @@ import android.widget.Button;
 
 
 public class MainActivity extends AppCompatActivity implements View.OnClickListener {
-    private Button[] buttons = new Button[10];
-    private TicTacToeLogic.TTTElement[] board_status = new TicTacToeLogic.TTTElement[9];
+    private Button[] mButtons = new Button[10];
+    private TicTacToeLogic.TTTElement[] mBoardStatus = new TicTacToeLogic.TTTElement[9];
+    private Button mTempButton;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -20,39 +21,37 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
 
     public void onClick(View v) {
 
-        if (v.getId() == buttons[9].getId()) {  // if "New game" is clicked
-            buttons[9].setVisibility(View.INVISIBLE);
+        if (v.getId() == mButtons[9].getId()) {  // if "New game" is clicked
+            mButtons[9].setVisibility(View.INVISIBLE);
             activate_buttons();
             reset_board();
         }
 
-        else {
-            Button some_button = (Button) findViewById(v.getId());
+        else { // if a tic-tac-toe box is clicked
+            mTempButton = (Button)findViewById(v.getId());
 
-            if (some_button.getText() == "") {
+            if (mTempButton.getText() == "") { // set text to "x" and update board if text is empty
+                mTempButton.setText("X");
+                update_board_status(mTempButton, TicTacToeLogic.TTTElement.X);
 
-                some_button.setText("X");
-                update_board_status(some_button, TicTacToeLogic.TTTElement.X);
-
-                if (TicTacToeLogic.isGameOver(board_status)) {
-                    if (buttons[9].getVisibility() == View.INVISIBLE) {
-                        buttons[9].setVisibility(View.VISIBLE);
-                        buttons[9].setText("New Game");
+                if (TicTacToeLogic.isGameOver(mBoardStatus)) { // check if game has been won
+                    if (mButtons[9].getVisibility() == View.INVISIBLE) {
+                        mButtons[9].setVisibility(View.VISIBLE);
+                        mButtons[9].setText("New Game");
                         deactivate_buttons();
                     }
                 }
 
                 else {
-                    int best_position_index = TicTacToeLogic.getBestMove(board_status);
-                    buttons[best_position_index].setText("O");
-                    update_board_status(buttons[best_position_index], TicTacToeLogic.TTTElement.O);
+                    int best_position_index = TicTacToeLogic.getBestMove(mBoardStatus);
+                    mButtons[best_position_index].setText("O");
+                    update_board_status(mButtons[best_position_index], TicTacToeLogic.TTTElement.O);
 
-                    if (TicTacToeLogic.isGameOver(board_status)) {
-                        if (buttons[9].getVisibility() == View.INVISIBLE) {
-                            buttons[9].setVisibility(View.VISIBLE);
-                            buttons[9].setText("New Game");
+                    if (TicTacToeLogic.isGameOver(mBoardStatus)) {
+                        if (mButtons[9].getVisibility() == View.INVISIBLE) {
+                            mButtons[9].setVisibility(View.VISIBLE);
+                            mButtons[9].setText("New Game");
                             deactivate_buttons();
-                            highlight_winning_row();
                         }
                     }
                 }
@@ -61,72 +60,56 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     }
 
     public void update_board_status(Button b, TicTacToeLogic.TTTElement type){
-        for (int i = 0; i < buttons.length; i++){
-            if (buttons[i].getId() == b.getId()){
-                board_status[i] = type;
+        for (int i = 0; i < mButtons.length; i++){
+            if (mButtons[i].getId() == b.getId()){
+                mBoardStatus[i] = type;
                 break;
             }
         }
     }
 
     public void reset_board(){
-        for (int i = 0; i < buttons.length; i++){
-            buttons[i].setText("");
+        for (int i = 0; i < mButtons.length; i++){
+            mButtons[i].setText("");
         }
-        for (int i = 0; i < board_status.length; i++){
-            board_status[i] = TicTacToeLogic.TTTElement.EMPTY;
+        for (int i = 0; i < mBoardStatus.length; i++){
+            mBoardStatus[i] = TicTacToeLogic.TTTElement.EMPTY;
         }
     }
 
     public void deactivate_buttons(){
-        for (int i = 0; i < buttons.length -1; i++){
-            buttons[i].setEnabled(false);
+        for (int i = 0; i < mButtons.length -1; i++){
+            mButtons[i].setEnabled(false);
         }
     }
 
     public void activate_buttons(){
-        for (int i = 0; i < buttons.length -1; i++){
-            buttons[i].setEnabled(true);
+        for (int i = 0; i < mButtons.length -1; i++){
+            mButtons[i].setEnabled(true);
         }
     }
 
     public void initialize() {
-        buttons[0] = (Button) findViewById(R.id.but1);
-        buttons[1] = (Button) findViewById(R.id.but2);
-        buttons[2] = (Button) findViewById(R.id.but3);
-        buttons[3] = (Button) findViewById(R.id.but4);
-        buttons[4] = (Button) findViewById(R.id.but5);
-        buttons[5] = (Button) findViewById(R.id.but6);
-        buttons[6] = (Button) findViewById(R.id.but7);
-        buttons[7] = (Button) findViewById(R.id.but8);
-        buttons[8] = (Button) findViewById(R.id.but9);
-        buttons[9] = (Button) findViewById(R.id.but10);
+        mButtons[0] = (Button) findViewById(R.id.but1);
+        mButtons[1] = (Button) findViewById(R.id.but2);
+        mButtons[2] = (Button) findViewById(R.id.but3);
+        mButtons[3] = (Button) findViewById(R.id.but4);
+        mButtons[4] = (Button) findViewById(R.id.but5);
+        mButtons[5] = (Button) findViewById(R.id.but6);
+        mButtons[6] = (Button) findViewById(R.id.but7);
+        mButtons[7] = (Button) findViewById(R.id.but8);
+        mButtons[8] = (Button) findViewById(R.id.but9);
+        mButtons[9] = (Button) findViewById(R.id.but10);
 
-        for (int i = 0; i < buttons.length; i++) {
-            buttons[i].setOnClickListener(MainActivity.this);
+        for (int i = 0; i < mButtons.length; i++) {
+            mButtons[i].setOnClickListener(MainActivity.this);
         }
 
-        for (int i = 0; i < board_status.length; i++) {
-            board_status[i] = TicTacToeLogic.TTTElement.EMPTY;
+        for (int i = 0; i < mBoardStatus.length; i++) {
+            mBoardStatus[i] = TicTacToeLogic.TTTElement.EMPTY;
         }
     }
-
-
-    public void highlight_winning_row(){
-
-    }
-
-
-
-
-
-
-
 
 }
-
-
-
-
 
 
